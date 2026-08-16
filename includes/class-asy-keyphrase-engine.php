@@ -156,8 +156,8 @@ class ASY_Keyphrase_Engine {
 		// Filter: minimum 2 occurrences OR appears in title/heading
 		$scored = array();
 		foreach ( $ngrams as $phrase => $freq ) {
-			$in_title   = ( strpos( $title, $phrase ) !== false );
-			$in_heading = ( strpos( $heading_text, $phrase ) !== false );
+			$in_title   = ( false !== strpos( $title, $phrase ) );
+			$in_heading = ( false !== strpos( $heading_text, $phrase ) );
 
 			if ( $freq < 2 && ! $in_title && ! $in_heading ) {
 				continue;
@@ -303,8 +303,12 @@ class ASY_Keyphrase_Engine {
 		}
 
 		// Sliding bigrams from title words
-		$phrases = array();
-		for ( $i = 0; $i < count( $words ) - 1 && count( $phrases ) < $count; $i++ ) {
+		$phrases    = array();
+		$word_count = count( $words );
+		for ( $i = 0; $i < $word_count - 1; $i++ ) {
+			if ( count( $phrases ) >= $count ) {
+				break;
+			}
 			$phrases[] = ucwords( $words[ $i ] . ' ' . $words[ $i + 1 ] );
 		}
 		return $phrases;
@@ -321,7 +325,7 @@ class ASY_Keyphrase_Engine {
 	 * Datamuse is free, needs no API key, and typically responds in < 200 ms.
 	 */
 	private static function datamuse_expand( $seed, $content_phrases, $limit = 6 ) {
-		$seed_encoded = urlencode( $seed );
+		$seed_encoded = rawurlencode( $seed );
 
 		// Query 1: "means like" — semantically similar concepts
 		$ml_results = self::datamuse_query(
@@ -354,7 +358,7 @@ class ASY_Keyphrase_Engine {
 			if ( empty( $word ) ) {
 				continue;
 			}
-			if ( strpos( $word, ' ' ) !== false ) {
+			if ( false !== strpos( $word, ' ' ) ) {
 				$multi[] = array(
 					'word'  => $word,
 					'score' => $score * 1.5,
@@ -424,7 +428,7 @@ class ASY_Keyphrase_Engine {
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
-		if ( $code !== 200 ) {
+		if ( 200 !== $code ) {
 			return array();
 		}
 
@@ -454,7 +458,7 @@ class ASY_Keyphrase_Engine {
 	 */
 	private static function stop_words() {
 		static $map = null;
-		if ( $map !== null ) {
+		if ( null !== $map ) {
 			return $map;
 		}
 
