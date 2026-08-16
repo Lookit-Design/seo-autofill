@@ -6,7 +6,7 @@
  * Version:     1.2.7
  * Author:      Lookit Design
  * License:     GPL-2.0+
- * Requires at least: 5.8
+ * Requires at least: 5.9
  * Requires PHP: 7.4
  * Text Domain: lookit-seo-autofill
  */
