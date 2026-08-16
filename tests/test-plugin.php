@@ -34,12 +34,8 @@ class Test_Lookit_SEO_Autofill_Plugin extends WP_UnitTestCase {
 		$own    = self::factory()->post->create( array( 'post_author' => $author ) );
 		$other  = self::factory()->post->create( array( 'post_author' => $editor ) );
 
-		$registered = get_registered_meta_keys( 'post', 'post' );
-		$this->assertArrayHasKey( '_asy_seo_locked', $registered );
-		$callback = $registered['_asy_seo_locked']['auth_callback'];
-
 		wp_set_current_user( $author );
-		$this->assertTrue( $callback( false, '_asy_seo_locked', $own ) );
-		$this->assertFalse( $callback( false, '_asy_seo_locked', $other ) );
+		$this->assertTrue( asy_lock_meta_auth( false, '_asy_seo_locked', $own ) );
+		$this->assertFalse( asy_lock_meta_auth( false, '_asy_seo_locked', $other ) );
 	}
 }

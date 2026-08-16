@@ -28,6 +28,11 @@ require_once ASY_PLUGIN_DIR . 'includes/class-asy-processor.php';
 add_action( 'plugins_loaded', array( 'ASY_Settings', 'init' ) );
 add_action( 'plugins_loaded', array( 'ASY_Processor', 'init' ) );
 
+function asy_lock_meta_auth( $allowed = false, $meta_key = '', $object_id = 0 ): bool {
+	unset( $allowed, $meta_key );
+	return current_user_can( 'edit_post', (int) $object_id );
+}
+
 // Register the lock meta for Gutenberg REST access
 add_action(
 	'init',
@@ -41,9 +46,7 @@ add_action(
 					'show_in_rest'  => true,
 					'single'        => true,
 					'type'          => 'string',
-					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
-						unset( $allowed, $meta_key );
-						return current_user_can( 'edit_post', $object_id ); },
+					'auth_callback' => 'asy_lock_meta_auth',
 				)
 			);
 		}
