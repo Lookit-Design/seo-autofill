@@ -3,7 +3,7 @@
  * Plugin Name: Lookit SEO Autofill
  * Plugin URI:  https://lookitdesign.com
  * Description: Automatically fills your SEO plugin's keyphrase, meta description, and related keyphrases (via content extraction + Datamuse) when a post is published. Works with Yoast SEO.
- * Version:     1.2.7
+ * Version:     1.2.8
  * Author:      Lookit Design
  * License:     GPL-2.0+
  * Requires at least: 5.9
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ASY_VERSION', '1.2.7' );
+define( 'ASY_VERSION', '1.2.8' );
 define( 'ASY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ASY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ASY_OPTION_KEY', 'asy_post_type_templates' );
@@ -41,8 +41,9 @@ add_action(
 					'show_in_rest'  => true,
 					'single'        => true,
 					'type'          => 'string',
-					'auth_callback' => function () {
-						return current_user_can( 'edit_posts' ); },
+					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
+						unset( $allowed, $meta_key );
+						return current_user_can( 'edit_post', $object_id ); },
 				)
 			);
 		}
