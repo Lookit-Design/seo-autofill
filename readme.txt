@@ -4,7 +4,7 @@ Tags: seo, yoast, meta description, keyphrase, autofill
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,9 @@ This plugin connects to two external services:
 * OpenRouter (https://openrouter.ai) — optional; used only if you configure an API key and enable AI related keyphrases. When triggered on publish, the plugin sends the post title and a content excerpt plus your prompt to OpenRouter, which routes it to the AI model you select. Terms: https://openrouter.ai/terms — Privacy: https://openrouter.ai/privacy
 
 == Changelog ==
+
+= 1.2.8 =
+* Require permission to edit a post before locking or unlocking its SEO fields over the REST API.
 
 = 1.2.7 =
 * Reordered the API-key sanitization so the input is sanitized before trimming, clearing the last Plugin Check warning.
