@@ -107,30 +107,30 @@ class ASY_Processor {
 		$row = $templates[ $pt ];
 
 		// 1. Focus keyphrase — priority: top content word → slug → title
-		if ( ! empty( $row['top_word_keyphrase'] ) ) {
+		if ( '' === (string) get_post_meta( $post->ID, '_yoast_wpseo_focuskw', true ) && ! empty( $row['top_word_keyphrase'] ) ) {
 			$keyphrase = $this->get_top_content_word( $post );
 			if ( $keyphrase ) {
 				update_post_meta( $post->ID, '_yoast_wpseo_focuskw', sanitize_text_field( $keyphrase ) );
 				$this->log( "Keyphrase (top word) set for post {$post->ID}: {$keyphrase}" );
 			}
-		} elseif ( ! empty( $row['slug_keyphrase'] ) ) {
+		} elseif ( '' === (string) get_post_meta( $post->ID, '_yoast_wpseo_focuskw', true ) && ! empty( $row['slug_keyphrase'] ) ) {
 			$keyphrase = $this->slug_to_keyphrase( $post->post_name );
 			update_post_meta( $post->ID, '_yoast_wpseo_focuskw', sanitize_text_field( $keyphrase ) );
 			$this->log( "Keyphrase (slug) set for post {$post->ID}: {$keyphrase}" );
-		} elseif ( ! empty( $row['set_keyphrase'] ) ) {
+		} elseif ( '' === (string) get_post_meta( $post->ID, '_yoast_wpseo_focuskw', true ) && ! empty( $row['set_keyphrase'] ) ) {
 			update_post_meta( $post->ID, '_yoast_wpseo_focuskw', sanitize_text_field( $post->post_title ) );
 			$this->log( "Keyphrase (title) set for post {$post->ID}: {$post->post_title}" );
 		}
 
 		// 2. Meta description from template
-		if ( ! empty( $row['template'] ) ) {
+		if ( '' === (string) get_post_meta( $post->ID, '_yoast_wpseo_metadesc', true ) && ! empty( $row['template'] ) ) {
 			$description = $this->truncate( $this->resolve_template( $row['template'], $post ), 156 );
 			update_post_meta( $post->ID, '_yoast_wpseo_metadesc', sanitize_text_field( $description ) );
 			$this->log( "Meta description set for post {$post->ID}: {$description}" );
 		}
 
 		// 3. Related keyphrases via content extraction + Datamuse (fast, no timeout risk)
-		if ( ! empty( $row['ai_keyphrases'] ) ) {
+		if ( '' === (string) get_post_meta( $post->ID, '_yoast_wpseo_focuskeywords', true ) && ! empty( $row['ai_keyphrases'] ) ) {
 			$this->generate_keyphrases( $post );
 		}
 
@@ -174,6 +174,9 @@ class ASY_Processor {
 		$post = get_post( $post_id );
 		if ( ! $post instanceof WP_Post ) {
 			wp_send_json_error( "Post {$post_id} not found." );
+		}
+		if ( get_post_meta( $post_id, '_asy_seo_locked', true ) ) {
+			wp_send_json_error( 'SEO fields are locked for this post.' );
 		}
 
 		if ( ! defined( 'WPSEO_VERSION' ) ) {

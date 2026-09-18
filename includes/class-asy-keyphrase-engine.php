@@ -325,8 +325,6 @@ class ASY_Keyphrase_Engine {
 	 * Datamuse is free, needs no API key, and typically responds in < 200 ms.
 	 */
 	private static function datamuse_expand( $seed, $content_phrases, $limit = 6 ) {
-		$seed_encoded = rawurlencode( $seed );
-
 		// Query 1: "means like" — semantically similar concepts
 		$ml_results = self::datamuse_query(
 			array(
@@ -337,7 +335,7 @@ class ASY_Keyphrase_Engine {
 		// Query 2: "triggered by" — words/phrases strongly associated with seed
 		$rel_results = self::datamuse_query(
 			array(
-				'rel_trg' => $seed_encoded,
+				'rel_trg' => $seed,
 				'max'     => 20,
 			)
 		);
