@@ -122,6 +122,9 @@ class Test_Lookit_SEO_Autofill_Plugin extends WP_UnitTestCase {
 		add_filter( 'pre_http_request', $filter, 10, 3 );
 
 		$method = new ReflectionMethod( ASY_Keyphrase_Engine::class, 'datamuse_expand' );
+		if ( PHP_VERSION_ID < 80100 ) {
+			$method->setAccessible( true );
+		}
 		$method->invoke( null, 'Two Words', array(), 1 );
 		remove_filter( 'pre_http_request', $filter, 10 );
 
